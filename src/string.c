@@ -17,7 +17,8 @@ void resize_string(struct string *s)
     s->value = realloc(s->value, (size_t) (n_step * STRING_RESIZE_STEP));
 }
 
-void clean_string(const struct string *str)
+void clean_string(struct string *str)
 {
+    str->length = -1;
     free(str->value);
 }
