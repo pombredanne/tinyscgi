@@ -9,4 +9,8 @@ struct string
     char *value;
 };
 
+extern void init_string(struct string *);
+extern void resize_string(struct string *);
+extern void clean_string(struct string *);
+
 #endif
