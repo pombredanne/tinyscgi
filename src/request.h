@@ -3,12 +3,6 @@
 
 #include "string.h"
 
-struct range
-{
-    int begin;
-    int end;
-};
-
 struct header
 {
     struct string name;
@@ -26,5 +20,12 @@ struct request
     struct header_list *headers;
     struct string body;
 };
+
+extern void init_header(struct header *);
+extern void clean_header(struct header *);
+extern void init_header_list(struct header_list *);
+extern void clean_header_list(struct header_list *);
+extern void init_request(struct request *);
+extern void clean_request(struct request *);
 
 #endif
