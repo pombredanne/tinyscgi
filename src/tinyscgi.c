@@ -6,6 +6,7 @@
 #include <sys/socket.h>
 #include <sys/wait.h>
 #include <netinet/in.h>
+#include "errors.h"
 #include "request.h"
 
 #define MAX_REQUEST_SIZE (4096)
@@ -54,7 +55,7 @@ int main(int argc, char **argv)
 {
      int sockfd;
      struct sockaddr_in server_address, client_address;
-     int n;
+     int n, retval;
 
      sockfd = xsocket(AF_INET, SOCK_STREAM, 0);
      memzero(&server_address, sizeof(server_address));
@@ -89,31 +90,35 @@ int main(int argc, char **argv)
 
              /* parse scgi request */
              printf("* prepared to parse request...\n");
-             parse_request(socket_stream, &request, MAX_REQUEST_SIZE);
+             retval = parse_request(socket_stream, &request, MAX_REQUEST_SIZE);
+             if (retval != REQUEST_OK)
+             {
+                 printf("== REQUEST_ERROR[0x%X] ==\n", retval);
+             }
+
+             shutdown(sockfd2, SHUT_RD);
 
              /* send response header */
-             printf("* prepared to send response...\n");
+             printf("* prepared to send response header...\n");
              write_str(sockfd2, "Status: 200 OK\r\n"
                  "Content-Type: text/plain\r\n" "\r\n");
 
              /* send response body */
+             printf("* prepared to send response body...\n");
              write_str(sockfd2, "== SCGI REQUEST HEADERS ==\n");
              for (h=request.headers; h != NULL; h=h->next)
-             {
-                 write_str(sockfd2, "\t");
-                 write_str(sockfd2, h->item.name);
-                 write_str(sockfd2, ": ");
-                 write_str(sockfd2, h->item.value);
-                 write_str(sockfd2, "\n");
-             }
+                 fprintf(socket_stream, "\t%s:%s\n",
+                         h->item.name, h->item.value);
 
-             write_str(sockfd2, "== SCGI REQUEST BODY ==\n");
-             write_str(sockfd2, request.body);
+             fprintf(socket_stream, "== SCGI REQUEST BODY ==\n");
+             fprintf(socket_stream, "%s", request.body);
 
-             shutdown(sockfd2, SHUT_RDWR);
+             shutdown(sockfd2, SHUT_WR);
 
              close(sockfd2);
              printf("* closed socket [fd=%d]...\n", sockfd2);
+
+             destory_request(&request);
 
              exit(0);
          }
