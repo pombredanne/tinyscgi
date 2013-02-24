@@ -12,8 +12,14 @@ AC_CONFIG_HEADERS([config.h])
 AC_PROG_CC
 AM_PROG_CC_C_O
 PKG_CHECK_MODULES([CHECK], [check >= 0.9.4])
+AC_ARG_ENABLE([debug],
+              [AS_HELP_STRING([--enable-debug],
+                              [debug program (default is no)])],
+              [CFLAGS="${CFLAGS} -DDEBUG -O0 -g3"],
+              [CFLAGS="${CFLAGS}"])
 
 # Checks for libraries.
+AC_SEARCH_LIBS(socket, socket)
 
 # Checks for header files.
 
