@@ -8,8 +8,8 @@ configure_file (data/test_netstring_1.txt
 
 # compile test case
 add_library (testtscgi test_buffer.c test_header.c test_netstring.c
-             test_request.c)
-target_link_libraries (testtscgi ${CHECK_LIBRARIES} tscgi)
+             test_request.c test_hashable_header.c)
+target_link_libraries (testtscgi ${CHECK_LIBRARIES} tscgi tscgi-hash-header)
 
 # compile test driver
 add_executable (check_tscgi check_tscgi.c)

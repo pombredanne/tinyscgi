@@ -10,5 +10,6 @@ set (CMAKE_MODULE_PATH
      ${CMAKE_SOURCE_DIR}/cmake/modules/)
 
 # add source and testing
+add_subdirectory (deps)
 add_subdirectory (src)
 add_subdirectory (tests)
