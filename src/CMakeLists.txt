@@ -1,5 +1,6 @@
 add_subdirectory (tscgi)
 add_subdirectory (tscgi-server)
+add_subdirectory (tscgi-server-lua)
 
 find_package (Libuv REQUIRED)
 
